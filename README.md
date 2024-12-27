@@ -1,2 +1,2 @@
 # swy-propdel
- Delete props on vehicle collision
+ Delete props on vehicle collision for racing servers.
