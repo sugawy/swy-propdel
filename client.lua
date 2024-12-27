@@ -35,9 +35,9 @@ local function deleteEntityWithPhysics(entity)
             DetachEntity(entity, false, true)   
             SetEntityAsMissionEntity(entity, true, true)
             DeleteEntity(entity)
-            print("Physics prop deleted:", entity)
+            print("deleted:", entity)
         else
-            print("Failed to gain control of entity:", entity)
+            print("Cant delete:", entity)
         end
     end
 end
