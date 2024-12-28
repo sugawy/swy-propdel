@@ -18,30 +18,23 @@ local function isDeletableProp(entity)
     return false
 end
 
-
 local function deleteEntityWithPhysics(entity)
     if DoesEntityExist(entity) then
         if not NetworkHasControlOfEntity(entity) then
             NetworkRequestControlOfEntity(entity)
             local timeout = 0
-            while not NetworkHasControlOfEntity(entity) and timeout < 500 do
+            while not NetworkHasControlOfEntity(entity) and timeout < 100 do
                 Wait(10)
                 timeout = timeout + 10
             end
         end
 
         if NetworkHasControlOfEntity(entity) then
-            FreezeEntityPosition(entity, false) 
-            DetachEntity(entity, false, true)   
             SetEntityAsMissionEntity(entity, true, true)
             DeleteEntity(entity)
-            print("deleted:", entity)
-        else
-            print("Cant delete:", entity)
         end
     end
 end
-
 
 CreateThread(function()
     while true do
@@ -49,21 +42,18 @@ CreateThread(function()
         if IsPedInAnyVehicle(ped, false) then
             local vehicle = GetVehiclePedIsIn(ped, false)
             local vehCoords = GetEntityCoords(vehicle)
-
-            
             local entities = GetGamePool('CObject')
             for _, entity in ipairs(entities) do
                 if DoesEntityExist(entity) and isDeletableProp(entity) then
                     local entityCoords = GetEntityCoords(entity)
-                    local distance = #(vehCoords - entityCoords)
-
-                    
-                    if distance < 5.0 and IsEntityTouchingEntity(vehicle, entity) then
-                        deleteEntityWithPhysics(entity) 
+                    if #(vehCoords - entityCoords) < 10.0 and IsEntityTouchingEntity(vehicle, entity) then
+                        deleteEntityWithPhysics(entity)
                     end
                 end
             end
+            Wait(100) 
+        else
+            Wait(1000) 
         end
-        Wait(50) 
     end
 end)
