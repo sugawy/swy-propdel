@@ -1,14 +1,6 @@
-local propsToDelete = {
-    `prop_streetlight_01`,
-    `prop_streetlight_03`,
-    `prop_fire_hydrant_2`,
-    `prop_fire_hydrant_1`,
-    `prop_traffic_01d`,
-}
-
 local function isDeletableProp(entity)
     local model = GetEntityModel(entity)
-    for _, prop in ipairs(propsToDelete) do
+    for _, prop in ipairs(Config.PropsToDelete) do
         if model == prop then
             return true
         end
@@ -45,8 +37,8 @@ CreateThread(function()
             for _, entity in ipairs(entities) do
                 if DoesEntityExist(entity) and isDeletableProp(entity) then
                     local entityCoords = GetEntityCoords(entity)
-                    if #(vehCoords - entityCoords) < 10.0 then
-    
+                    if #(vehCoords - entityCoords) < Config.DeleteRadius then
+
                         local touching = IsEntityTouchingEntity(vehicle, entity)
                         local isMoving = not IsEntityStatic(entity) and #(GetEntityVelocity(entity)) > 0.1
 
