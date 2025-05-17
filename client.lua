@@ -1,12 +1,10 @@
---props
 local propsToDelete = {
-   `prop_streetlight_01`,   
+    `prop_streetlight_01`,
     `prop_streetlight_03`,
-   `prop_fire_hydrant_2`,
+    `prop_fire_hydrant_2`,
     `prop_fire_hydrant_1`,
     `prop_traffic_01d`,
 }
-
 
 local function isDeletableProp(entity)
     local model = GetEntityModel(entity)
@@ -23,7 +21,7 @@ local function deleteEntityWithPhysics(entity)
         if not NetworkHasControlOfEntity(entity) then
             NetworkRequestControlOfEntity(entity)
             local timeout = 0
-            while not NetworkHasControlOfEntity(entity) and timeout < 100 do
+            while not NetworkHasControlOfEntity(entity) and timeout < 200 do
                 Wait(10)
                 timeout = timeout + 10
             end
@@ -43,17 +41,25 @@ CreateThread(function()
             local vehicle = GetVehiclePedIsIn(ped, false)
             local vehCoords = GetEntityCoords(vehicle)
             local entities = GetGamePool('CObject')
+
             for _, entity in ipairs(entities) do
                 if DoesEntityExist(entity) and isDeletableProp(entity) then
                     local entityCoords = GetEntityCoords(entity)
-                    if #(vehCoords - entityCoords) < 10.0 and IsEntityTouchingEntity(vehicle, entity) then
-                        deleteEntityWithPhysics(entity)
+                    if #(vehCoords - entityCoords) < 10.0 then
+    
+                        local touching = IsEntityTouchingEntity(vehicle, entity)
+                        local isMoving = not IsEntityStatic(entity) and #(GetEntityVelocity(entity)) > 0.1
+
+                        if touching or isMoving then
+                            deleteEntityWithPhysics(entity)
+                        end
                     end
                 end
             end
-            Wait(100) 
+
+            Wait(100)
         else
-            Wait(1000) 
+            Wait(1000)
         end
     end
 end)
