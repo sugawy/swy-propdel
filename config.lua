@@ -1,10 +1,11 @@
 Config = {}
 
 -- Enable fake hitbox box in front of vehicle to prevent damage
-Config.UseHitbox = true
+Config.UseHitbox = true --for sure leave this on 
 
--- Distance in meters from vehicle to detect deletable props
-Config.DeleteRadius = 10.0
+
+Config.DeleteRadius = 2.0 -- tighter forward detection
+Config.HitboxDepth = 2.5 -- how far ahead of vehicle to scan
 
 -- List of props (as model hashes) to delete
 Config.PropsToDelete = {
@@ -14,3 +15,5 @@ Config.PropsToDelete = {
     `prop_fire_hydrant_1`,
     `prop_traffic_01d`,
 }
+
+--with love for 21frames
